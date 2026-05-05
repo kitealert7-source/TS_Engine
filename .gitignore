@@ -1,0 +1,69 @@
+# TS_Engine .gitignore
+# -----------------------------------------------------------------------------
+# Excludes runtime artifacts that the live sidecar / parity monitor regenerate
+# every bar (telemetry journals, logs, PID files, caches). Keeps source code,
+# all audit/report markdown at the root, the archive_phase_b_final/ evidence
+# directory, and the spike_artifacts/ Phase-A reference reproductions.
+# -----------------------------------------------------------------------------
+
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.cache/
+
+# --- Editor / tool state ----------------------------------------------------
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Live runtime artifacts ------------------------------------------------
+# Sidecar + parity monitor write these continuously; committing live snapshots
+# creates merge conflicts on every flush.
+runtime_logs/*.log
+runtime_logs/*.pid
+runtime_logs/sidecar_err.log
+runtime_logs/monitor_err.log
+
+# --- Live telemetry journals -----------------------------------------------
+# These are regenerated per bar by the new observability hardening
+# (BAR_TELEMETRY, EXIT_SIGNAL, SHADOW_SIGNAL streams).
+journal/*.jsonl
+journal/*.bak_*
+journal/*.epoch*
+journal/*.tmp
+
+# --- Live divergence log ---------------------------------------------------
+# Top-level divergence_log.jsonl is rewritten by parity_monitor.monitor.
+divergence_log.jsonl
+divergence_log.jsonl.tmp
+
+# --- Re-allow archived evidence under runtime_logs/ -------------------------
+# These are audit-trail artifacts (Phase-B termination + investigation
+# chain), explicitly preserved for forensic review.
+!runtime_logs/archive_phase_b_final/
+!runtime_logs/archive_phase_b_final/**
+!runtime_logs/archive_epoch1/
+!runtime_logs/archive_epoch1/**
+
+# --- Secrets / local config -----------------------------------------------
+.env
+.env.*
+*secret*
+*token*
+*apikey*
+*api_key*
+*.pem
+*.key
+*.p12
+
+# --- OS / temp files --------------------------------------------------------
+*.tmp
+*.bak
+~$*

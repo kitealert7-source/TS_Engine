@@ -1,0 +1,133 @@
+{
+  "strategy_id": "62_TREND_IDX_5M_KALFLIP_S01_V2_P15",
+  "live_window_start": "2026-05-04 12:00:00",
+  "live_window_end": "2026-05-04 22:30:00",
+  "warmup_a_hours": 72.0,
+  "warmup_b_hours": 12.0,
+  "replay_a_total_fires": 4,
+  "replay_b_total_fires": 4,
+  "replay_a_fired_bars": [
+    "2026-05-04 12:15:00",
+    "2026-05-04 15:00:00",
+    "2026-05-04 20:20:00",
+    "2026-05-04 22:10:00"
+  ],
+  "replay_b_fired_bars": [
+    "2026-05-04 12:25:00",
+    "2026-05-04 15:00:00",
+    "2026-05-04 20:20:00",
+    "2026-05-04 22:10:00"
+  ],
+  "target_bars": [
+    {
+      "bar_ts_utc": "2026-05-04 12:15:00",
+      "live_reference": {
+        "sidecar": "ABSENT",
+        "execution": "PRESENT",
+        "class": "DIVERGENCE_5"
+      },
+      "a_fired": true,
+      "b_fired": false,
+      "a_kalman_regime": 1,
+      "b_kalman_regime": -1,
+      "a_kalman_flip": true,
+      "b_kalman_flip": false,
+      "a_kalman_trend": 27812.798137891583,
+      "b_kalman_trend": 27812.842427896034,
+      "kalman_trend_delta": -0.044290004450886045,
+      "a_adx": 20.189730722172435,
+      "b_adx": 20.205326838644392,
+      "a_rsi_smoothed": 64.10790455572364,
+      "b_rsi_smoothed": 64.10790455572364,
+      "a_hurst": 0.4806129619206282,
+      "b_hurst": 0.4806129619206282,
+      "a_in_pos": false,
+      "b_in_pos": false,
+      "a_close": 27810.33,
+      "b_close": 27810.33
+    },
+    {
+      "bar_ts_utc": "2026-05-04 15:00:00",
+      "live_reference": {
+        "sidecar": "PRESENT",
+        "execution": "PRESENT",
+        "class": "COMPARABLE"
+      },
+      "a_fired": true,
+      "b_fired": true,
+      "a_kalman_regime": 1,
+      "b_kalman_regime": 1,
+      "a_kalman_flip": true,
+      "b_kalman_flip": true,
+      "a_kalman_trend": 27740.62844227945,
+      "b_kalman_trend": 27740.636937258787,
+      "kalman_trend_delta": -0.008494979338138364,
+      "a_adx": 16.01975820489486,
+      "b_adx": 16.02178259335417,
+      "a_rsi_smoothed": 81.23572415241097,
+      "b_rsi_smoothed": 81.23572415241097,
+      "a_hurst": 0.5431363070916335,
+      "b_hurst": 0.5431363070916335,
+      "a_in_pos": false,
+      "b_in_pos": false,
+      "a_close": 27753.13,
+      "b_close": 27753.13
+    },
+    {
+      "bar_ts_utc": "2026-05-04 20:20:00",
+      "live_reference": {
+        "sidecar": "PRESENT",
+        "execution": "PRESENT",
+        "class": "COMPARABLE"
+      },
+      "a_fired": true,
+      "b_fired": true,
+      "a_kalman_regime": 1,
+      "b_kalman_regime": 1,
+      "a_kalman_flip": true,
+      "b_kalman_flip": true,
+      "a_kalman_trend": 27674.432957787565,
+      "b_kalman_trend": 27674.43330418885,
+      "kalman_trend_delta": -0.00034640128433238715,
+      "a_adx": 36.88861836474306,
+      "b_adx": 36.88864320967861,
+      "a_rsi_smoothed": 89.51051030415304,
+      "b_rsi_smoothed": 89.51051030415304,
+      "a_hurst": 0.5347428147216206,
+      "b_hurst": 0.5347428147216206,
+      "a_in_pos": false,
+      "b_in_pos": false,
+      "a_close": 27699.03,
+      "b_close": 27699.03
+    },
+    {
+      "bar_ts_utc": "2026-05-04 22:10:00",
+      "live_reference": {
+        "sidecar": "ABSENT",
+        "execution": "PRESENT",
+        "class": "DIVERGENCE_6"
+      },
+      "a_fired": true,
+      "b_fired": true,
+      "a_kalman_regime": 1,
+      "b_kalman_regime": 1,
+      "a_kalman_flip": true,
+      "b_kalman_flip": true,
+      "a_kalman_trend": 27672.052172001066,
+      "b_kalman_trend": 27672.052287321287,
+      "kalman_trend_delta": -0.00011532022108440287,
+      "a_adx": 20.72970517325418,
+      "b_adx": 20.72971059571485,
+      "a_rsi_smoothed": 72.52879422668167,
+      "b_rsi_smoothed": 72.52879422668167,
+      "a_hurst": 0.5542391507903129,
+      "b_hurst": 0.5542391507903129,
+      "a_in_pos": false,
+      "b_in_pos": false,
+      "a_close": 27678.43,
+      "b_close": 27678.43
+    }
+  ],
+  "engine_version": "v1_5_9 (vault snapshot)",
+  "evaluate_bar_module": "engine_dev.universal_research_engine.v1_5_9.evaluate_bar"
+}

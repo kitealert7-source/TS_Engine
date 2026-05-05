@@ -1,0 +1,67 @@
+==============================================================================
+TS_Engine Phase B sidecar — run_id=PHASE_B_20260501T055738Z
+Observer-only mode. Zero dispatch authority.
+==============================================================================
+
+[1/4] Loading portfolio from C:\Users\faraw\Documents\TS_Execution\portfolio.yaml
+  found 9 enabled strategies
+
+[2/4] Building (symbol, tf) groups...
+  built 9 groups:
+    BTCUSD 1h: 1 strategies
+    GER40 15m: 1 strategies
+    XAUUSD 1h: 1 strategies
+    GBPJPY 30m: 1 strategies
+    GBPUSD 15m: 1 strategies
+    EURUSD 15m: 1 strategies
+    AUDJPY 30m: 1 strategies
+    AUDUSD 30m: 1 strategies
+    NAS100 5m: 1 strategies
+
+[3/4] Connecting to MT5 (read-only)...
+  connecting to MT5 (read-only)...
+  MT5 connected: account=62125663  server=OctaFX-Real  balance=16.32
+
+[4/4] Spawning bar loops...
+[BTCUSD 1h] warming up state from 1500 bars...
+  started thread: barloop-BTCUSD-1h
+[GER40 15m] warming up state from 1500 bars...  started thread: barloop-GER40-15m
+[XAUUSD 1h] warming up state from 1500 bars...
+
+  started thread: barloop-XAUUSD-1h
+[GBPJPY 30m] warming up state from 1500 bars...
+  started thread: barloop-GBPJPY-30m
+[GBPUSD 15m] warming up state from 1500 bars...
+  started thread: barloop-GBPUSD-15m
+[EURUSD 15m] warming up state from 1500 bars...
+  started thread: barloop-EURUSD-15m
+[AUDJPY 30m] warming up state from 1500 bars...
+  started thread: barloop-AUDJPY-30m
+[AUDUSD 30m] warming up state from 1500 bars...
+  started thread: barloop-AUDUSD-30m
+[NAS100 5m] warming up state from 1500 bars...
+  started thread: barloop-NAS100-5m
+
+==============================================================================
+Phase B sidecar running. Ctrl-C to stop.
+==============================================================================
+[REGIME_FILTER] active | mode=signal | allowed=None | exclude=[2,2]
+[REGIME_FILTER] active | mode=signal | allowed=None | exclude=[1,1]
+[GER40 15m]   warmed: 35_PA_GER40_15M_DAYOC_S12_V1_P00  in_pos=False  pending=no[NAS100 5m]   warmed: 62_TREND_IDX_5M_KALFLIP_S01_V2_P15  in_pos=False  pending=no
+
+[AUDUSD 30m]   warmed: 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD  in_pos=False  pending=no
+[GBPUSD 15m]   warmed: 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD  in_pos=False  pending=no
+[BTCUSD 1h]   warmed: 33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  in_pos=False  pending=no
+[GBPJPY 30m]   warmed: 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05  in_pos=False  pending=no
+[EURUSD 15m]   warmed: 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD  in_pos=False  pending=no
+[NAS100 5m] entering live loop (period=300s, post-close delay=20s)
+[GER40 15m] entering live loop (period=900s, post-close delay=20s)
+[GBPUSD 15m] entering live loop (period=900s, post-close delay=20s)
+[XAUUSD 1h]   warmed: 27_MR_XAUUSD_1H_PINBAR_S01_V1_P05  in_pos=True  pending=no[BTCUSD 1h] entering live loop (period=3600s, post-close delay=20s)
+[AUDJPY 30m]   warmed: 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY  in_pos=False  pending=no
+
+[EURUSD 15m] entering live loop (period=900s, post-close delay=20s)
+[GBPJPY 30m] entering live loop (period=1800s, post-close delay=20s)
+[AUDUSD 30m] entering live loop (period=1800s, post-close delay=20s)
+[XAUUSD 1h] entering live loop (period=3600s, post-close delay=20s)
+[AUDJPY 30m] entering live loop (period=1800s, post-close delay=20s)

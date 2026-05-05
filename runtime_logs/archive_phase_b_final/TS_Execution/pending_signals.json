@@ -1,0 +1,32 @@
+{
+  "22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05": {
+    "shadow": {
+      "direction": -1,
+      "signal_hash": "80729d41751fc997b8a245bae71240a75bd3b1908dcdfef9c2a2989299ace215",
+      "entry_price": 212.72,
+      "entry_price_source": "tick_bid_ask_at_fail",
+      "stop_price": 213.08569989585664,
+      "bars_held": 0,
+      "entry_bar_ts": "2026-05-05 02:30 SVR",
+      "lot_size": 0.64,
+      "tp_price": null
+    }
+  },
+  "22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD": {
+    "shadow": {
+      "direction": -1,
+      "signal_hash": "0a9fa3c2b09130eda38a45c9066b2ca33da1828096bc3d0aea13368a59dff8ee",
+      "entry_price": 0.71672,
+      "entry_price_source": "tick_bid_ask_at_fail",
+      "stop_price": 0.7180071581828044,
+      "bars_held": 1,
+      "entry_bar_ts": "2026-05-05 02:00 SVR",
+      "lot_size": 1.16,
+      "tp_price": null
+    }
+  },
+  "_meta": {
+    "run_id": "20260504T011609Z_29588",
+    "written_utc": "2026-05-05T00:01:18"
+  }
+}

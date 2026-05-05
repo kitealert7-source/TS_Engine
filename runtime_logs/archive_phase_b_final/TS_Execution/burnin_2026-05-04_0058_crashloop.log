@@ -1,0 +1,164 @@
+  ENV_OK  research_root=Trade_Scan  engine=v1_5_3  strategies_checked=9
+==================================================
+EXECUTION BRIDGE — PHASE 0
+==================================================
+portfolio.yaml:  C:\Users\faraw\Documents\TS_Execution\portfolio.yaml
+research_root:   C:\Users\faraw\Documents\Trade_Scan
+strategies:      9 enabled
+timeframe groups:9
+
+TimeframeGroup: BTCUSD H1  (1 strategies)
+  [1] 33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02
+       C:\Users\faraw\Documents\Trade_Scan\strategies\33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02\strategy.py  [OK]
+
+TimeframeGroup: GER40 M15  (1 strategies)
+  [1] 35_PA_GER40_15M_DAYOC_S12_V1_P00
+       C:\Users\faraw\Documents\Trade_Scan\strategies\35_PA_GER40_15M_DAYOC_S12_V1_P00\strategy.py  [OK]
+
+TimeframeGroup: XAUUSD H1  (1 strategies)
+  [1] 27_MR_XAUUSD_1H_PINBAR_S01_V1_P05
+       C:\Users\faraw\Documents\Trade_Scan\strategies\27_MR_XAUUSD_1H_PINBAR_S01_V1_P05\strategy.py  [OK]
+
+TimeframeGroup: GBPJPY M30  (1 strategies)
+  [1] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05
+       C:\Users\faraw\Documents\Trade_Scan\strategies\22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05\strategy.py  [OK]
+
+TimeframeGroup: GBPUSD M15  (1 strategies)
+  [1] 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD
+       C:\Users\faraw\Documents\Trade_Scan\strategies\22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD\strategy.py  [OK]
+
+TimeframeGroup: EURUSD M15  (1 strategies)
+  [1] 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD
+       C:\Users\faraw\Documents\Trade_Scan\strategies\22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD\strategy.py  [OK]
+
+TimeframeGroup: AUDJPY M30  (1 strategies)
+  [1] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY
+       C:\Users\faraw\Documents\Trade_Scan\strategies\22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY\strategy.py  [OK]
+
+TimeframeGroup: AUDUSD M30  (1 strategies)
+  [1] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD
+       C:\Users\faraw\Documents\Trade_Scan\strategies\22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD\strategy.py  [OK]
+
+TimeframeGroup: NAS100 M5  (1 strategies)
+  [1] 62_TREND_IDX_5M_KALFLIP_S01_V2_P15
+       C:\Users\faraw\Documents\Trade_Scan\strategies\62_TREND_IDX_5M_KALFLIP_S01_V2_P15\strategy.py  [OK]
+
+Execution order is deterministic (declaration order preserved).
+==================================================
+PHASE 0 COMPLETE
+==================================================
+  CONFIG_LOCK  portfolio_hash=68cdfe93f3506c75...
+  BURNIN_LOGS_ARCHIVED  count=1  dest=logs/archive/
+Execution mode: mql5_ipc
+STRATEGY_LOAD_SUMMARY loaded=9 failed=0 total=9
+[REGIME_FILTER] active | mode=signal | allowed=None | exclude=[1,1]
+  PHASE0_SMOKE_OK  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02
+[REGIME_FILTER] active | mode=signal | allowed=None | exclude=[2,2]
+  PHASE0_SMOKE_OK  35_PA_GER40_15M_DAYOC_S12_V1_P00
+  PHASE0_SMOKE_OK  27_MR_XAUUSD_1H_PINBAR_S01_V1_P05
+  PHASE0_SMOKE_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05
+  PHASE0_SMOKE_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD
+  PHASE0_SMOKE_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD
+  PHASE0_SMOKE_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY
+  PHASE0_SMOKE_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD
+  PHASE0_SMOKE_OK  62_TREND_IDX_5M_KALFLIP_S01_V2_P15
+  GUARD_OK  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  vault=DRY_RUN_2026_04_06__71723056  signals=252  trades=252
+  GUARD_OK  35_PA_GER40_15M_DAYOC_S12_V1_P00  vault=DRY_RUN_2026_04_06__f4ce8823  signals=393  trades=393
+  GUARD_OK  27_MR_XAUUSD_1H_PINBAR_S01_V1_P05  vault=DRY_RUN_2026_04_12__3e8e0700  signals=413  trades=413
+  GUARD_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05  vault=DRY_RUN_2026_04_12__a2571097  signals=324  trades=324
+  GUARD_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD  vault=DRY_RUN_2026_04_12__749487a6  signals=612  trades=612
+  GUARD_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD  vault=DRY_RUN_2026_04_12__9c9f2de3  signals=1996  trades=1996
+  GUARD_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY  vault=DRY_RUN_2026_04_12__a0d8868a  signals=1876  trades=1876
+  GUARD_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD  vault=DRY_RUN_2026_04_12__1b50cbf2  signals=2321  trades=2321
+  GUARD_OK  62_TREND_IDX_5M_KALFLIP_S01_V2_P15  vault=DRY_RUN_2026_04_30__c0abdf0e  signals=1075  trades=1075
+  GUARD_SUMMARY  built=9  skipped=0  errors=0
+Regime model validated: all 7 required columns present.
+  SHADOW_LEDGER_READ_ERROR  BadZipFile: Bad magic number for file header
+  BURN_IN_MODE_ON  notional_capital=$10000  risk_per_trade=1.5%
+  SYMBOL_SPECS_OK  loaded 31 symbols from symbol_specs_mt5.json
+  RUN_REGISTRY_OK  run_id=20260504T005848Z_54356  history=100
+  INVARIANT_OK  registry <-> candidates in sync (9 BURN_IN, 0 REMOVED_FM_BURNIN)
+IPC bridge dir:  C:\Users\faraw\Documents\TS_Execution\bridge
+  MT5_RATE_LIMIT_TELEMETRY_STARTED  interval=60s  max_calls=24  window=60s  bypass_ms=250  bypass_max_per_window=3  priority_funcs=['order_send']  delay_log_ms=500
+MT5 connected: Octa Markets MetaTrader 5  build 5833  connected=True
+  MT5_LIMITER_OUTSIDE_LOCK=ON  (A2 probe: limiter acquired outside mt5_lock in fetch_bars/get_first_tick_after)
+  BROKER_SPECS_OK  all 9 symbols match live MT5 specs
+  RUN_START  run_id=20260504T005848Z_54356  pid=54356
+  PROCESS_START  2026-05-04T00:58:49Z
+
+  ==================================================
+  STRATEGY ACTIVATION LOG
+  ==================================================
+  timestamp:      2026-05-04T00:58:49Z
+  portfolio_hash: 68cdfe93f3506c7594237abd0488a14f2fc2173713a8101eb09278b67cc0fad8
+  run_id:         20260504T005848Z_54356
+  strategies:     9
+  symbols:        ['AUDJPY', 'AUDUSD', 'BTCUSD', 'EURUSD', 'GBPJPY', 'GBPUSD', 'GER40', 'NAS100', 'XAUUSD']
+    [BTCUSD  ] 33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02
+    [GER40   ] 35_PA_GER40_15M_DAYOC_S12_V1_P00
+    [XAUUSD  ] 27_MR_XAUUSD_1H_PINBAR_S01_V1_P05
+    [GBPJPY  ] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05
+    [GBPUSD  ] 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD
+    [EURUSD  ] 22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD
+    [AUDJPY  ] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY
+    [AUDUSD  ] 22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD
+    [NAS100  ] 62_TREND_IDX_5M_KALFLIP_S01_V2_P15
+  ==================================================
+
+  ACTIVATION_LOG_OK  activation_log.json
+  REGISTRY_CHECK_OK  9 strategies in sync
+  STATE_RESTORE_META  run_id=20260501T111907Z_14888
+  SHADOW_RESTORED  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  LONG  entry=78763.92  bars=6  bar=2026-05-01 16:00 SVR
+  SHADOW_RESTORED  27_MR_XAUUSD_1H_PINBAR_S01_V1_P05  LONG  entry=4623.44  bars=1  bar=2026-05-01 21:00 SVR
+  SHADOW_RESTORED  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY  LONG  entry=113.11  bars=0  bar=2026-05-01 23:00 SVR
+  SHADOW_RESTORED  62_TREND_IDX_5M_KALFLIP_S01_V2_P15  LONG  entry=27754.50  bars=13  bar=2026-05-01 22:05 SVR
+  STATE_RESTORE_COMPLETE  pending=0  shadow=4  live_bars=0
+  RESTORE_OK  pending=0  shadow_open=4  open_tickets=0  bars_held_range=[]  prior_run_id=20260504T005746Z_53992
+
+PRE-WARM: populating regime cache for all groups...
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=BTCUSD  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  BTCUSD H1  bars=299
+  PREWARM_OK  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02
+  PREWARM_OK  BTCUSD H1
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=GER40  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  GER40 M15  bars=299
+  PREWARM_OK  35_PA_GER40_15M_DAYOC_S12_V1_P00
+  PREWARM_OK  GER40 M15
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=XAUUSD  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  XAUUSD H1  bars=299
+  PREWARM_OK  27_MR_XAUUSD_1H_PINBAR_S01_V1_P05
+  PREWARM_OK  XAUUSD H1
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=GBPJPY  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  GBPJPY M30  bars=299
+  PREWARM_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P05
+  PREWARM_OK  GBPJPY M30
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=GBPUSD  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  GBPUSD M15  bars=299
+  PREWARM_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P01_GBPUSD
+  PREWARM_OK  GBPUSD M15
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=EURUSD  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  EURUSD M15  bars=299
+  PREWARM_OK  22_CONT_FX_15M_RSIAVG_TRENDFILT_S07_V1_P02_EURUSD
+  PREWARM_OK  EURUSD M15
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=AUDJPY  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  AUDJPY M30  bars=299
+  PREWARM_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY
+  PREWARM_OK  AUDJPY M30
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=AUDUSD  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  AUDUSD M30  bars=299
+  PREWARM_OK  22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P02_AUDUSD
+  PREWARM_OK  AUDUSD M30
+  MT5_CALL_TIMING  func=copy_rates_from_pos  symbol=NAS100  caller=  limiter_ms=0  lock_ms=0  call_ms=0  total_ms=0
+  PREWARM_REGIME_OK  NAS100 M5  bars=299
+  PREWARM_OK  62_TREND_IDX_5M_KALFLIP_S01_V2_P15
+  PREWARM_OK  NAS100 M5
+PRE-WARM complete.
+
+  LOT_COMPUTED  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  __SMOKE__  lot=0.0000  equity=47  risk=$0.71  sl_dist=785.73000  tick_sz=0.01  tick_val=0.0100
+  LOT_NORMALIZED  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  __SMOKE__  raw_lot=0.0000  normalized_lot=0.0000  step=0.01  vol_min=0.01  vol_max=500.0
+  SKIP_DISPATCH  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  __SMOKE__  lot_below_min  raw_lot=0.0000  normalized_lot=0.0000  vol_min=0.01
+  2026-05-04T00:59:49Z | MT5_RATE_LIMIT | active=23/24 | window=60s | total_calls=24 | delays=0 | bypasses=0 (0/3 in window) | cap_hits=0 | avg_wait_ms=0 | max_wait_ms=0 | last_success_age=58s | top=[symbol_info:10,copy_rates_from_pos:9,initialize:1,terminal_info:1,positions_get:1]
+  MT5_RATE_LIMIT_DELAY  func=symbol_info_tick  wait=57797ms  active=24/24  total_calls=25  total_delays=1
+  LOT_COMPUTED  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  __SMOKE__  lot=0.1900  equity=10000  risk=$150.00  sl_dist=785.73000  tick_sz=0.01  tick_val=0.0100
+  SHADOW_FALLBACK  33_TREND_BTCUSD_1H_IMPULSE_S03_V1_P02  __SMOKE__  reason=lot_below_min  dir=LONG  entry=78561.87000  source=tick_bid_ask_at_fail  lot=0.19
+  SMOKE_FAIL  stage=postcondition  error=boundary stub was never invoked in mql5_ipc — dispatch aborted WITHOUT activating shadow, which indicates a real wiring problem (NO_EXEC_TIMEOUT / SKIP_CONCURRENCY_CAP / silent return). See preceding log lines.
