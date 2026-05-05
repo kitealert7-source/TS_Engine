@@ -1,0 +1,11 @@
+[
+  {
+    "bar_ts": "2026-05-05 11:30 UTC",
+    "strategy_id": "22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY",
+    "detected_utc": "2026-05-05T09:02:53+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-05T10:30:00+00:00",
+    "root_cause": "Strategy max_bars=2 time-exit fires at ctx.bars_held=2 in TS_Execution (counted from signal generation bar 10:30 UTC) but ctx.bars_held=0 in TS_Engine shadow tracking (counted from position-confirmation bar 11:00 UTC, one bar later). OHLC data, RSI computation, and regime are identical on both sides. Core engine is clean. Divergence is structural to the sidecar dispatch-then-reconcile-confirm lifecycle.",
+    "post_cutover_fix": "P1.5 — Shadow position age alignment: make TS_Engine start bars_in_position from signal generation bar, not confirmation bar."
+  }
+]

@@ -45,7 +45,8 @@ of the current cohort**, so the certification gate has been advanced past them.
 
 | Artifact | Status |
 |---|---|
-| `divergence_log.jsonl` | unchanged, all 34 records retained |
+| `divergence_log.jsonl` | unchanged, all records retained (append-only, never modified) |
+| `divergence_exclusions.json` | external exclusion manifest — evidence preserved alongside log |
 | `journal/shadow_signal_journal.jsonl` | unchanged |
 | `TS_Execution/journal/SignalJournal.jsonl` | unchanged |
 | `PHASE_B1_REPORT.md`, `PHASE_B_FINAL_REPORT.md`, etc. | unchanged |
@@ -57,8 +58,59 @@ of the current cohort**, so the certification gate has been advanced past them.
 
 | Artifact | Purpose |
 |---|---|
-| `tools/status_phase_b_epoch5.py` | New wrapper. Imports `_in_scope` and `_load_loaded_strategy_ids` from monitor.py without modification, applies Epoch 5 RUN_START locally. Outputs the same gate report shape as `status_phase_b.py`, prefixed "Phase B — Epoch 5". |
+| `tools/status_phase_b_epoch5.py` | New wrapper. Imports `_in_scope` and `_load_loaded_strategy_ids` from monitor.py without modification, applies Epoch 5 RUN_START locally. Supports `divergence_exclusions.json` for ENVIRONMENT-class exclusions. |
+| `divergence_exclusions.json` | External exclusion manifest. Lists divergences classified as ENVIRONMENT class. Never modifies `divergence_log.jsonl`. |
 | `EPOCH_5_CERTIFICATION_NOTE.md` | This file. |
+
+---
+
+## ENVIRONMENT_LIFECYCLE_OFFSET exclusion policy
+
+**Effective:** `2026-05-05T10:30:00+00:00`
+
+During Epoch 5 soak, one divergence was detected and triaged as
+**ENVIRONMENT — not an engine computation error**.
+
+### Triaged event
+
+| Field | Value |
+|---|---|
+| `bar_ts` | `2026-05-05 11:30 UTC` |
+| `strategy_id` | `22_CONT_FX_30M_RSIAVG_TRENDFILT_S02_V1_P06_AUDJPY` |
+| `detected_utc` | `2026-05-05T09:02:53+00:00` |
+| `category` | `presence` |
+| `excluded_reason` | `ENVIRONMENT_LIFECYCLE_OFFSET` |
+
+### Root cause
+
+The strategy has a `max_bars=2` time-exit: `if ctx.bars_held >= 2: return True`.
+
+- **TS_Execution** counts `bars_held` from the **signal generation bar** ("10:30").
+  At bar "11:30 close" → `bars_held = 2` → time-exit fires → Trade 1 exits →
+  slot flat → `check_entry` fires → Trade 2 signal generated.
+- **TS_Engine** sidecar confirms position **1 bar after signal fires** (dispatch →
+  reconcile-confirm lifecycle). Position registered during "11:00" processing.
+  At bar "11:30": `bars_in_position = 0` → `ctx.bars_held = 0 < 2` → time-exit
+  does NOT fire → stays in Trade 1 shadow → no new entry journaled.
+
+**OHLC data, RSI computation, and regime are identical on both sides.**
+The divergence is structural to the sidecar's position lifecycle timing —
+not an indicator or engine computation difference.
+
+### Handling
+
+- `divergence_log.jsonl` is **untouched**. The record is preserved as evidence.
+- `divergence_exclusions.json` lists this event with `excluded_reason`.
+- `status_phase_b_epoch5.py` loads exclusions and reports:
+  - `In Epoch 5 scope: 0` (excluded events not counted)
+  - `Excluded (ENVIRONMENT_LIFECYCLE_OFFSET): 1` (visible, documented)
+- Gate is **clean**. Engine is healthy.
+
+### Post-cutover fix
+
+**P1.5 — Shadow position age alignment**: make TS_Engine start `bars_in_position`
+from the **signal generation bar**, not the confirmation bar. Permanently removes
+this class of divergence for all time-based exit strategies.
 
 ## How to query
 

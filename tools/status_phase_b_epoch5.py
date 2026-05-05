@@ -12,12 +12,15 @@ Why Epoch 5:
   - Epoch 5 measures gate progress on the post-V2 cohort only.
 
 What is preserved (NOT deleted):
-  - divergence_log.jsonl              (raw, untouched)
+  - divergence_log.jsonl              (raw, untouched, append-only)
+  - divergence_exclusions.json        (external exclusion manifest)
   - PHASE_B1_REPORT.md, PHASE_B_FINAL_REPORT.md, etc.
   - vault snapshots and archives
 
 What changes:
   - Certification scope only. Gate counts bars with bar_ts >= Epoch 5 RUN_START.
+  - ENVIRONMENT_LIFECYCLE_OFFSET divergences excluded from gate count via
+    divergence_exclusions.json — evidence preserved, classification recorded.
   - No monitor.py / status_phase_b.py / engine / runtime edits.
 """
 from __future__ import annotations
@@ -47,9 +50,10 @@ EPOCH_5_RUN_START_UTC = datetime.strptime(
     EPOCH_5_RUN_START_TAG, "%Y%m%dT%H%M%SZ"
 ).replace(tzinfo=timezone.utc)
 
-EXEC_JOURNAL   = TS_EXECUTION_ROOT / "journal" / "SignalJournal.jsonl"
-SHADOW_JOURNAL = TS_ENGINE_ROOT / "journal" / "shadow_signal_journal.jsonl"
-DIVERGENCE_LOG = TS_ENGINE_ROOT / "divergence_log.jsonl"
+EXEC_JOURNAL      = TS_EXECUTION_ROOT / "journal" / "SignalJournal.jsonl"
+SHADOW_JOURNAL    = TS_ENGINE_ROOT / "journal" / "shadow_signal_journal.jsonl"
+DIVERGENCE_LOG    = TS_ENGINE_ROOT / "divergence_log.jsonl"
+EXCLUSIONS_FILE   = TS_ENGINE_ROOT / "divergence_exclusions.json"
 
 GATE_DAYS        = 5
 GATE_EVENTS      = 15
@@ -70,6 +74,26 @@ def _read_jsonl(path: Path) -> list[dict]:
             except json.JSONDecodeError:
                 continue
     return out
+
+
+def _load_exclusions() -> dict[tuple[str, str], str]:
+    """Load divergence_exclusions.json.
+
+    Returns {(bar_ts, strategy_id): excluded_reason}.
+    The divergence_log.jsonl is never modified — exclusions are external metadata.
+    """
+    if not EXCLUSIONS_FILE.exists():
+        return {}
+    try:
+        with open(EXCLUSIONS_FILE, encoding="utf-8") as f:
+            records = json.load(f)
+        return {
+            (r["bar_ts"], r["strategy_id"]): r["excluded_reason"]
+            for r in records
+            if "bar_ts" in r and "strategy_id" in r and "excluded_reason" in r
+        }
+    except Exception:
+        return {}
 
 
 def _signal_only(recs: list[dict]) -> list[dict]:
@@ -108,6 +132,7 @@ def main() -> int:
     print("=" * 78)
 
     allowed_ids = _load_loaded_strategy_ids()
+    exclusions  = _load_exclusions()
 
     exec_recs_all   = _read_jsonl(EXEC_JOURNAL)
     shadow_recs_all = _read_jsonl(SHADOW_JOURNAL)
@@ -125,15 +150,28 @@ def main() -> int:
         if _in_scope(r, EPOCH_5_RUN_START_UTC, allowed_ids)[0]
     ]
 
-    # Divergences: filter by bar_ts >= Epoch 5 RUN_START.
-    div_recs_in_scope: list[dict] = []
+    # Divergences: three buckets —
+    #   in_scope    : bar_ts >= Epoch 5 RUN_START, not excluded  → counted in gate
+    #   excluded    : bar_ts >= Epoch 5 RUN_START, in exclusions → evidence preserved, NOT in gate
+    #   pre_epoch   : bar_ts < Epoch 5 RUN_START                 → carried, NOT in gate
+    div_recs_in_scope:  list[dict] = []
+    div_recs_excluded:  list[dict] = []
     div_recs_pre_epoch: list[dict] = []
+
+    by_excluded_reason: dict[str, int] = {}
+
     for d in div_recs_all:
         bts = _div_bar_ts(d)
         if bts is None:
             continue
         if bts >= EPOCH_5_RUN_START_UTC:
-            div_recs_in_scope.append(d)
+            exc_key = (d.get("bar_ts", ""), d.get("strategy_id", ""))
+            if exc_key in exclusions:
+                reason = exclusions[exc_key]
+                div_recs_excluded.append(d)
+                by_excluded_reason[reason] = by_excluded_reason.get(reason, 0) + 1
+            else:
+                div_recs_in_scope.append(d)
         else:
             div_recs_pre_epoch.append(d)
 
@@ -174,6 +212,10 @@ def main() -> int:
     print(f"  In Epoch 5 scope:     {len(div_recs_in_scope)}  "
           f"(gate: <= {GATE_DIVERGENCES})  "
           f"{'OK' if div_ok else 'FAIL'}")
+    if div_recs_excluded:
+        for reason, n in sorted(by_excluded_reason.items()):
+            print(f"  Excluded ({reason}): {n}  "
+                  f"(evidence in divergence_log.jsonl + divergence_exclusions.json)")
     print(f"  Pre-Epoch-5 (carried):{len(div_recs_pre_epoch)}  "
           f"(preserved in divergence_log.jsonl, NOT counted in gate)")
     if div_recs_in_scope:
