@@ -26,4 +26,14 @@
     "root_cause": "Same root cause as 2026-05-05 23:10 UTC — bars_in_position rolling-window freeze for the same live-entered NAS100 Kalman-flip shadow position. Second downstream presence divergence from the same stuck shadow position. Fixed by bar_loop.py commit 23ccbf8.",
     "post_cutover_fix": "P1.5 resolved — bar_loop.py persistent position-age counter fix (commit 23ccbf8). Pre-fix divergence; will not recur after sidecar restart."
   }
+  ,
+  {
+    "bar_ts": "2026-05-06 09:00 UTC",
+    "strategy_id": "35_PA_GER40_15M_DAYOC_S12_V1_P00",
+    "detected_utc": "2026-05-06T06:16:54+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-06T13:45:00+00:00",
+    "root_cause": "Regime model state divergence at sidecar-restart boundary. Sidecar restarted at 02:12 UTC May 6 with fresh 1500-bar warmup (GER40 regime_id=128, regime=unstable_trend/strong_up). TS_Execution had accumulated continuously since 03:27 UTC May 5 (regime_id=132, regime=range_high_vol). Same OHLC bar, ohlc_sha256 identical. Regime disagreement caused sidecar to fire entry_signal=True while TS_Execution computed NO SIGNAL. This is the first live GER40/15M bar after sidecar restart (market closed ~21:00 UTC May 5 to ~09:00 UTC May 6). Regime state divergence is structural to the sidecar cold-start warmup vs TS_Execution continuous accumulation. Both sides are now flat and processing the same subsequent bars; regime states will converge over time. Core engine computation is clean — both sides compute their respective regime state correctly from their respective inputs.",
+    "post_cutover_fix": "Regime state persistence across sidecar restarts would eliminate this class. Deferred post-cutover design change. Note: this class (regime_id divergence at restart boundary) will recur on any future sidecar restart that happens mid-session while TS_Execution has accumulated substantial regime history."
+  }
 ]
