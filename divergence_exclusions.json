@@ -6,6 +6,24 @@
     "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
     "excluded_utc": "2026-05-05T10:30:00+00:00",
     "root_cause": "Strategy max_bars=2 time-exit fires at ctx.bars_held=2 in TS_Execution (counted from signal generation bar 10:30 UTC) but ctx.bars_held=0 in TS_Engine shadow tracking (counted from position-confirmation bar 11:00 UTC, one bar later). OHLC data, RSI computation, and regime are identical on both sides. Core engine is clean. Divergence is structural to the sidecar dispatch-then-reconcile-confirm lifecycle.",
-    "post_cutover_fix": "P1.5 — Shadow position age alignment: make TS_Engine start bars_in_position from signal generation bar, not confirmation bar."
+    "post_cutover_fix": "P1.5 resolved — bar_loop.py persistent position-age counter fix (commit 23ccbf8). bars_held now advances correctly in live mode."
+  },
+  {
+    "bar_ts": "2026-05-05 23:10 UTC",
+    "strategy_id": "62_TREND_IDX_5M_KALFLIP_S01_V2_P15",
+    "detected_utc": "2026-05-05T20:32:10+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-06T02:00:00+00:00",
+    "root_cause": "bars_in_position rolling-window freeze: evaluate_bar computed bars_held = i - entry_index = 1498 - 1498 = 0 always for live-entered positions. Strategy _MIN_HOLD_BARS=20 gate permanently locked — opposite-signal exit never fired in sidecar. TS_Execution correctly exited after 20+ bars and journaled a new Kalman-flip entry; sidecar stuck in prior position, no new entry journaled. OHLC data, Kalman, ADX, RSI, Hurst identical on both sides. Core engine computation is clean. Divergence is structural to rolling-window indexing in live sidecar mode. Root cause documented in ROOT_CAUSE_CONFIRMATION.md.",
+    "post_cutover_fix": "P1.5 resolved — bar_loop.py persistent position-age counter fix (commit 23ccbf8). Pre-fix divergence; will not recur after sidecar restart."
+  },
+  {
+    "bar_ts": "2026-05-06 04:05 UTC",
+    "strategy_id": "62_TREND_IDX_5M_KALFLIP_S01_V2_P15",
+    "detected_utc": "2026-05-06T01:11:48+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-06T02:00:00+00:00",
+    "root_cause": "Same root cause as 2026-05-05 23:10 UTC — bars_in_position rolling-window freeze for the same live-entered NAS100 Kalman-flip shadow position. Second downstream presence divergence from the same stuck shadow position. Fixed by bar_loop.py commit 23ccbf8.",
+    "post_cutover_fix": "P1.5 resolved — bar_loop.py persistent position-age counter fix (commit 23ccbf8). Pre-fix divergence; will not recur after sidecar restart."
   }
 ]

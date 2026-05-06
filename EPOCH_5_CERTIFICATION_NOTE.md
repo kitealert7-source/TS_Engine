@@ -106,11 +106,42 @@ not an indicator or engine computation difference.
   - `Excluded (ENVIRONMENT_LIFECYCLE_OFFSET): 1` (visible, documented)
 - Gate is **clean**. Engine is healthy.
 
-### Post-cutover fix
+### Root cause (updated 2026-05-06 — ENGINE-HARD-LIVE-MODE confirmed)
 
-**P1.5 — Shadow position age alignment**: make TS_Engine start `bars_in_position`
-from the **signal generation bar**, not the confirmation bar. Permanently removes
-this class of divergence for all time-based exit strategies.
+Investigation of the NAS100 Kalman flip strategy (`62_TREND_IDX_5M_KALFLIP_S01_V2_P15`,
+`_MIN_HOLD_BARS = 20`) revealed the deeper root cause. In `evaluate_bar.py` line 338:
+
+```python
+bars_held = (i - state.entry_index) if state.in_pos else 0
+```
+
+In live sidecar mode, `i = latest_closed_idx = 1498` on every fresh 1500-bar
+fetch. For positions entered during the live loop, `entry_index = 1498` at entry,
+so `bars_held = 0` forever. For warmup-entered positions, `bars_held` freezes at
+the warmup-end value and never advances. Both classes fail any `bars_held`
+threshold check in `check_exit`.
+
+The AUDJPY divergence was the first observable symptom of this same bug.
+
+Full analysis: `ROOT_CAUSE_CONFIRMATION.md`. Fix design: `PATCH_PLAN.md`.
+
+### P1.5 — RESOLVED (2026-05-06, commit 23ccbf8)
+
+`bar_loop.py` now maintains a persistent `bars_in_position_live` counter in
+`StrategyState`. Each live bar while in position: counter increments, then
+`state.entry_index = max(0, latest_closed_idx - bars_in_position_live)` is
+synthesized before `evaluate_bar` is called. The formula inside `evaluate_bar`
+then yields `bars_held = bars_in_position_live` (correct).
+
+- `evaluate_bar.py` is **untouched** — Phase A parity preserved
+- Warmup replay path (`_build_warmed_state` sequential `i`) is **untouched**
+- Counter is seeded from warmup's final `bars_held` on startup/restart
+- Defensive `max(0, …)` clamp guards against corrupted state
+- Two NAS100 pre-fix divergences added to `divergence_exclusions.json`
+- Gate returned to `In Epoch 5 scope: 0 — OK`
+
+**This class of divergence (ENVIRONMENT_LIFECYCLE_OFFSET, bars_held freeze)
+will not recur after sidecar restart with the fixed `bar_loop.py`.**
 
 ## How to query
 
