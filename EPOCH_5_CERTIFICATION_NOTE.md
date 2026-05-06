@@ -143,6 +143,52 @@ then yields `bars_held = bars_in_position_live` (correct).
 **This class of divergence (ENVIRONMENT_LIFECYCLE_OFFSET, bars_held freeze)
 will not recur after sidecar restart with the fixed `bar_loop.py`.**
 
+---
+
+## Triage doctrine — ENVIRONMENT_LIFECYCLE_OFFSET vs ENGINE-SUSPECT_STATE
+
+**Effective:** `2026-05-06T13:45:00+00:00`
+
+All three conditions must be simultaneously present to classify a presence/regime
+divergence as `ENVIRONMENT_LIFECYCLE_OFFSET`. Missing any one condition changes the
+classification.
+
+### Exclusion criteria (all 3 required)
+
+| # | Condition | How to verify |
+|---|---|---|
+| 1 | **Restart-adjacent** | Divergence bar_ts falls within the first live session after a confirmed sidecar restart timestamp |
+| 2 | **Same OHLC hash** | `ohlc_sha256` in `bar_telemetry.jsonl` matches the hash TS_Execution would compute for the same bar (V2 hash, excludes forming bar) |
+| 3 | **Regime-id differs, both runtimes healthy** | `regime_id` diverges between sidecar and TS_Execution — explains signal disagreement without implying a computation bug |
+
+If all 3: **ENVIRONMENT_LIFECYCLE_OFFSET** — exclude, document, gate remains valid.
+
+### ENGINE-SUSPECT_STATE trigger
+
+If condition 2 (same OHLC) and condition 3 (regime mismatch) are present but condition 1
+(restart-adjacent) is **absent**:
+
+→ **ENGINE-SUSPECT_STATE** — do NOT exclude.
+→ **Stop soak. Investigate immediately.**
+
+Rationale: without a restart to explain the state divergence, a regime mismatch on
+identical OHLC input implies persistent state corruption or a non-deterministic code
+path in the regime model. That is a genuine engine integrity question that the soak
+gate exists to catch. Auto-exclusion would defeat the purpose of the gate.
+
+### What "restart-adjacent" means
+
+A divergence is restart-adjacent if:
+- Its `bar_ts` is in the first live trading session after a documented sidecar restart, AND
+- The relevant symbol/timeframe group had no live bars processed by the sidecar between
+  the restart and the divergence bar (i.e., the divergent bar is truly the first live bar
+  the fresh sidecar saw for that group, not a later bar after state had already converged)
+
+A divergence on bar N+10 after restart, where bars N+1 through N+9 already agreed, is
+NOT restart-adjacent — it would be ENGINE-SUSPECT_STATE.
+
+---
+
 ## How to query
 
 ```bash
