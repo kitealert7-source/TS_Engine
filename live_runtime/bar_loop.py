@@ -83,6 +83,8 @@ class StrategyState:
     bar_state:   BarState
     config:      EngineConfig
     last_pending_bar_idx: int = -1  # to detect new pending_entry vs. carry-over
+    bars_in_position_live: int = 0  # persistent position-age counter for live mode;
+                                    # see ROOT_CAUSE_CONFIRMATION.md + PATCH_PLAN.md
 
 
 # Bar window size — must be >= max indicator warmup across all strategies.
@@ -236,12 +238,18 @@ def run_group_loop(
         try:
             config = resolve_engine_config(strategy)
             state, last_idx = _build_warmed_state(df_warm, strategy, config)
+            # Seed live position-age counter from warmup's final bars_held.
+            # If a position was open at warmup end, the counter must start at
+            # (last_idx - entry_index) so the first live bar increments to
+            # last_idx - entry_index + 1 — continuing the sequence correctly.
+            _bipl_init = (last_idx - state.entry_index) if state.in_pos else 0
             states.append(StrategyState(
                 strategy_id=strategy.name,
                 strategy=strategy,
                 bar_state=state,
                 config=config,
                 last_pending_bar_idx=last_idx,
+                bars_in_position_live=_bipl_init,
             ))
             print(f"{log_prefix}   warmed: {strategy.name}  "
                   f"in_pos={state.in_pos}  pending={'yes' if state.pending_entry else 'no'}")
@@ -321,9 +329,41 @@ def run_group_loop(
                 _bs = ss.bar_state
                 _in_pos_before        = bool(_bs.in_pos)
                 _direction_before     = int(_bs.direction)
-                _entry_index_before   = int(_bs.entry_index)
                 _stop_price_before    = (float(_bs.stop_price_active)
                                          if _bs.stop_price_active is not None else None)
+
+                # POSITION-AGING FIX (PATCH_PLAN.md §3 Change C)
+                #
+                # evaluate_bar computes:  bars_held = i - state.entry_index
+                # In live mode i = latest_closed_idx = 1498 on every call.
+                # For positions entered during the live loop, entry_index is
+                # also set to 1498 at entry time, so bars_held = 0 forever.
+                # For warmup-entered positions, entry_index is a historical
+                # value that never advances, so bars_held freezes at the
+                # warmup-end value rather than continuing to climb.
+                #
+                # Fix: maintain bars_in_position_live as a persistent counter
+                # and back-compute a synthetic entry_index so the formula
+                # inside evaluate_bar yields the correct bars_held:
+                #
+                #   entry_index = latest_closed_idx - bars_in_position_live
+                #   bars_held   = latest_closed_idx - entry_index
+                #               = bars_in_position_live   ✓
+                #
+                # The clamp to 0 guards against corrupted state; it should
+                # never trigger in normal operation (positions > 1498 bars are
+                # outside any active strategy's operating envelope).
+                if _in_pos_before:
+                    ss.bars_in_position_live += 1
+                    _bs.entry_index = max(
+                        0, latest_closed_idx - ss.bars_in_position_live
+                    )
+
+                # INVARIANT: _entry_index_before MUST be captured AFTER the
+                # override above. If this capture is moved above the override
+                # block, telemetry (bars_in_position, entry_bar_ts) will
+                # silently regress to the broken pre-fix values. Do not reorder.
+                _entry_index_before = int(_bs.entry_index)
 
                 evaluate_bar(df_eval, latest_closed_idx, ss.bar_state,
                              ss.strategy, ss.config)
@@ -331,6 +371,16 @@ def run_group_loop(
                 # OBSERVABILITY_CANONICAL_HASH_V1 — decision post-snapshot
                 _in_pos_after    = bool(ss.bar_state.in_pos)
                 _direction_after = int(ss.bar_state.direction)
+
+                # POSITION-AGING FIX: update counter on position transitions.
+                if not _in_pos_before and _in_pos_after:
+                    # Pending entry just executed this bar. evaluate_bar set
+                    # entry_index = latest_closed_idx = 1498. Counter starts
+                    # at 0; it will be incremented to 1 on the next bar.
+                    ss.bars_in_position_live = 0
+                if _in_pos_before and not _in_pos_after:
+                    # Exit fired this bar (SL, TP, or signal). Reset counter.
+                    ss.bars_in_position_live = 0
 
                 # Emit BAR_TELEMETRY (one per evaluation, fire or no-fire)
                 if bar_telemetry is not None:
