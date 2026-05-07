@@ -176,16 +176,62 @@ identical OHLC input implies persistent state corruption or a non-deterministic 
 path in the regime model. That is a genuine engine integrity question that the soak
 gate exists to catch. Auto-exclusion would defeat the purpose of the gate.
 
-### What "restart-adjacent" means
+### What "restart-adjacent" means — two subtypes
 
-A divergence is restart-adjacent if:
-- Its `bar_ts` is in the first live trading session after a documented sidecar restart, AND
-- The relevant symbol/timeframe group had no live bars processed by the sidecar between
-  the restart and the divergence bar (i.e., the divergent bar is truly the first live bar
-  the fresh sidecar saw for that group, not a later bar after state had already converged)
+Two subtypes of restart-adjacent divergence are recognised. Both require all three
+exclusion conditions to be present.
 
-A divergence on bar N+10 after restart, where bars N+1 through N+9 already agreed, is
-NOT restart-adjacent — it would be ENGINE-SUSPECT_STATE.
+---
+
+#### Type A — Immediate restart mismatch (first live bar)
+
+A divergence is Type A restart-adjacent if:
+- Its `bar_ts` is the **first live bar** the fresh sidecar saw for that group, AND
+- No live bars for that group were processed by the sidecar between the restart
+  and the divergence bar
+
+A divergence on bar N+10 after restart, where bars N+1 through N+9 already had
+signals that **agreed**, is NOT restart-adjacent — it is ENGINE-SUSPECT_STATE.
+
+---
+
+#### Type B — Delayed stateful restart mismatch (path-dependent indicator, proven reboot gap)
+
+A divergence is Type B restart-adjacent if **all** of the following hold:
+
+1. **Machine reboot externally proven** — documented gap in `startup_launcher.log`
+   of > 5 minutes (Task Scheduler fires every 5 min; any gap implies machine offline).
+   A sidecar-only restart without a machine reboot does NOT qualify for Type B.
+
+2. **Diverging bar is the first SIGNAL event, not a later agreeing bar** — bars
+   N+1 through N+k−1 must have been both-SILENT on both sides (no signals, no
+   presence records either way). A divergence on bar N+k where bars N+1 through
+   N+k−1 had actual agreeing signals is NOT Type B — it is ENGINE-SUSPECT_STATE.
+
+3. **Indicator is path-dependent with documented slow convergence** — the diverging
+   indicator (e.g. Kalman filter) accumulates internal state over many bars. The
+   cold-start gap between the two runtimes directly explains why the first signal
+   event fires at different bars.
+
+4. **Both runtimes cold-started from the same window with a proven time gap** —
+   not one continuous and one fresh. The gap duration must plausibly account for
+   the observed Kalman state difference.
+
+5. **Fork is self-consistent and self-closing** — one side opens a position, the
+   other stays flat; the position eventually closes naturally and both systems
+   re-sync. No position is left open indefinitely or in a contradictory state.
+
+**Relationship to the "bar N+10" rule:** That rule was written for Type A. It means
+"if bars N+1 through N+9 had agreeing signals, then bar N+10's disagreement is
+suspicious." It does NOT apply to Type B because N+1 through N+k−1 are silent bars
+(no signals). Bar count alone cannot disqualify a Type B classification; what matters
+is whether earlier bars had actual agreeing signal records.
+
+---
+
+**If in doubt, do not exclude.** The bar N+10 ENGINE-SUSPECT_STATE default is the
+conservative anchor. Type B requires all five conditions above to be affirmatively met
+and should be documented with the specific evidence for each condition.
 
 ---
 

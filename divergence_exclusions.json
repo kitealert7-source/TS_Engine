@@ -33,7 +33,32 @@
     "detected_utc": "2026-05-06T06:16:54+00:00",
     "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
     "excluded_utc": "2026-05-06T13:45:00+00:00",
+    "subtype": "Type A — Immediate restart mismatch (first live bar)",
     "root_cause": "Regime model state divergence at sidecar-restart boundary. Sidecar restarted at 02:12 UTC May 6 with fresh 1500-bar warmup (GER40 regime_id=128, regime=unstable_trend/strong_up). TS_Execution had accumulated continuously since 03:27 UTC May 5 (regime_id=132, regime=range_high_vol). Same OHLC bar, ohlc_sha256 identical. Regime disagreement caused sidecar to fire entry_signal=True while TS_Execution computed NO SIGNAL. This is the first live GER40/15M bar after sidecar restart (market closed ~21:00 UTC May 5 to ~09:00 UTC May 6). Regime state divergence is structural to the sidecar cold-start warmup vs TS_Execution continuous accumulation. Both sides are now flat and processing the same subsequent bars; regime states will converge over time. Core engine computation is clean — both sides compute their respective regime state correctly from their respective inputs.",
     "post_cutover_fix": "Regime state persistence across sidecar restarts would eliminate this class. Deferred post-cutover design change. Note: this class (regime_id divergence at restart boundary) will recur on any future sidecar restart that happens mid-session while TS_Execution has accumulated substantial regime history."
+  },
+  {
+    "bar_ts": "2026-05-07 12:20 UTC",
+    "strategy_id": "62_TREND_IDX_5M_KALFLIP_S01_V2_P15",
+    "detected_utc": "2026-05-07T09:26:58+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-07T13:20:00+00:00",
+    "subtype": "Type B — Delayed stateful restart mismatch (path-dependent Kalman, machine reboot proven)",
+    "incident_id": "REBOOT_20260507_KALMAN_FORK",
+    "root_cause": "Machine reboot between 2026-05-07T01:05:15Z and 2026-05-07T08:19:01Z (7h 14min gap in startup_launcher.log — Task Scheduler fires every 5 min; 7h silence = machine offline). TS_Execution cold-started at 08:14 UTC. Sidecar not in Task Scheduler; manually restarted at 08:53 UTC — 39 minutes later. Both sides loaded from the same 1500-bar v1.5.9 window but TS_Execution processed 8 live NAS100 5m bars (08:15–08:50 UTC) before the sidecar existed. Kalman filter is path-dependent: 39-min accumulated-state gap caused different flip detection. At bar 12:20 server (09:20 UTC) — the 7th bar after sidecar start and the FIRST SIGNAL EVENT for this group post-restart — sidecar Kalman fires first flip (kalman_flip=True, kregime=1, entry=True). TS_Execution Kalman, having processed 8 additional live bars, does not flip at the same bar. Bars N+1 through N+6 (11:50–12:15 server) were both-SILENT on both sides — no signals, no agreement or disagreement. This is not a 'bar N+10 with N+1–N+9 agreeing' scenario. Evidence: startup_launcher.log gap; watchdog STALE_PID_IGNORED 'likely pre-reboot residue'; bar_telemetry confirms ohlc_sha256 identical on both sides. Core engine computation clean.",
+    "cascade_partner": "2026-05-07 13:40 UTC (same incident — sidecar slot occupied from 12:20 entry)",
+    "post_cutover_fix": "Machine reboot is an environmental event outside engine control. Sidecar auto-restart via Task Scheduler (or watchdog integration) would close the cold-start gap. Regime state persistence ([P2] backlog) would eliminate Kalman divergence even with a gap. Both are deferred post-cutover design work."
+  },
+  {
+    "bar_ts": "2026-05-07 13:40 UTC",
+    "strategy_id": "62_TREND_IDX_5M_KALFLIP_S01_V2_P15",
+    "detected_utc": "2026-05-07T10:47:30+00:00",
+    "excluded_reason": "ENVIRONMENT_LIFECYCLE_OFFSET",
+    "excluded_utc": "2026-05-07T13:20:00+00:00",
+    "subtype": "Type B — Delayed stateful restart mismatch (cascade from 12:20 fork)",
+    "incident_id": "REBOOT_20260507_KALMAN_FORK",
+    "root_cause": "Cascade from bar 12:20 fork (same incident, same machine reboot root cause). Sidecar opened shadow LONG at 12:20 (21 bars, exited at bar 14:10 via STRATEGY_SIGNAL_EXIT). At bar 13:40 server (10:40 UTC), TS_Execution Kalman flips (exec slot free) → entry signal fires. Sidecar slot is OCCUPIED from the 12:20 entry — bar_telemetry confirms kalman_flip=True at 13:40 but entry=False (in-position gate). One root cause, two presence records. The fork self-closed when the sidecar's 12:20 position exited at bar 14:10. Both systems are flat and re-synced after that point.",
+    "cascade_partner": "2026-05-07 12:20 UTC (primary fork bar)",
+    "post_cutover_fix": "Same as 12:20 entry. Cascade divergences will not recur once the primary Kalman cold-start divergence is eliminated."
   }
 ]
