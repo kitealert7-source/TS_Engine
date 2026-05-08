@@ -33,20 +33,15 @@ from typing import Any
 import pandas as pd
 
 # Engine imports — v1.5.9 evaluate_bar (the shared function)
+# v1.5.9 was promoted from the DR_BASELINE_2026_05_03_v1_5_8a vault snapshot
+# to the canonical engine_dev/ path on 2026-05-08 after Phase A (9/9 strategies,
+# 4,035 trades byte-identical to v1.5.8) and Phase B Epoch 5 (15 comparable
+# events, 0 in-scope divergences). Only TRADE_SCAN_ROOT is needed now.
 TRADE_SCAN_ROOT = Path(__file__).resolve().parents[2] / "Trade_Scan"
-# v1.5.9 currently lives only inside the DR_BASELINE_2026_05_03_v1_5_8a vault
-# snapshot. Path setup must put the snapshot ahead of TRADE_SCAN_ROOT so
-# `engine_dev.universal_research_engine.v1_5_9` resolves while `engines`,
-# `strategies`, `indicators` continue to come from TRADE_SCAN_ROOT itself.
-# Telemetry-only addition — no logic or signal-path change.
-_VAULT_V1_5_9_ROOT = (
-    TRADE_SCAN_ROOT / "vault" / "snapshots" / "DR_BASELINE_2026_05_03_v1_5_8a"
-)
-for _p in (TRADE_SCAN_ROOT, _VAULT_V1_5_9_ROOT):
-    _sp = str(_p)
-    if _sp in sys.path:
-        sys.path.remove(_sp)
-    sys.path.insert(0, _sp)
+_ts_str = str(TRADE_SCAN_ROOT)
+if _ts_str in sys.path:
+    sys.path.remove(_ts_str)
+sys.path.insert(0, _ts_str)
 
 from engine_dev.universal_research_engine.v1_5_9.evaluate_bar import (  # noqa: E402
     BarState,
